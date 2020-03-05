@@ -3,135 +3,200 @@
 <title> Rock Paper Scissors</title>
 <meta charset = "UTF-8">
 <body>
+
     <button id="rock">Rock</button>
     <button id="paper">Paper</button>
     <button id="scissors">Scissors</button>
+    
+    
     <script>
-    let playerInput;
-    buttons = document.querySelectorAll("button");
-    
-    
-    //buttons.forEach((button) => button.addEventListener("click", (e) => {
-    //alert(button.id);
-    //}))
-    
-
-    
-    buttons.forEach((button) => button.addEventListener("click", (e) => alert(playRound(playerInput, computerPlay))));
-    
-    // Stopping here, plan to change (e) => to game() and make game() fit the new UI.
-    // playerInput will = buttons.id
-    function capitalize(aString){
-            let trimmedString = aString.trim();
-            let lowerCaseString = trimmedString.toLowerCase();
-            let firstLetter = lowerCaseString.substr(0,1);
-            firstLetter = firstLetter.toUpperCase();
-            let finalString = firstLetter + lowerCaseString.substr(1);
-            return finalString;
-    }
-    function computerPlay(){
-        let num = Math.floor(Math.random() * 3);
-        switch (true){
-            case num == 0: 
-            return "Rock";
-            break;
-            case num == 1:
-            return "Paper";
-            break;
-            case num == 2:
-            return "Scissors";
-            break;            
-        }
-
-    }
-    
-    function playRound(playerSelection, computerSelection){
-        
-        playerSelection = capitalize(playerSelection);
-        //console.log(playerSelection);
-        let win = "You Win! " + playerSelection + " beats " + computerSelection;
-        let lose = "You Lose! " + computerSelection + " beats " + playerSelection;
-        let tie = "Tied! You both picked " + playerSelection;
-        let wrongInput = "Wrong input. Please use only the words rock, paper, or scissors without any extra characters or numbers.";
-        
-        if (playerSelection !== "Rock" && playerSelection !== "Scissors" && playerSelection !== "Paper"){
-            return wrongInput;
-        }
-        switch (true){
-            case playerSelection == computerSelection:
-            return tie;
-            break;
-            case playerSelection == "Rock" && computerSelection == "Scissors":
-            return win;
-            break;
-            case playerSelection == "Rock" && computerSelection == "Paper":
-            return lose;
-            break;
-            case playerSelection == "Paper" && computerSelection == "Rock":
-            return win;
-            break;
-            case playerSelection == "Paper" && computerSelection == "Scissors":
-            return lose;
-            break;
-            case playerSelection == "Scissors" && computerSelection == "Paper":
-            return win;
-            break;
-            case playerSelection == "Scissors" && computerSelection == "Rock":
-            return lose;
-            break;
-        }
-    }
-    function game(){
-        console.log("Let's play 5 rounds of rock, paper, scissors.");
-        
-        let playerInput;
-        let computerInput;
+        //Declare variables for later use
         let winCount = 0;
         let lossCount = 0;
         let tieCount = 0;
-        let scoreCountReport;
-        let i = 0;
-        //for (i = 0; i <= 4; i++){
+        let scoreCountReport = "\r\n Wins: " + winCount + " Losses: " + lossCount + " Ties: " + tieCount + "\r\n";
+        let playerSelection;
+
+
+        //Make and append the scoreBoard div
+        const scoreBoardDiv = document.createElement("div");
+        scoreBoardDiv.style.whiteSpace = "pre";
+        document.body.appendChild(scoreBoardDiv);
+        scoreBoardDiv.textContent = scoreCountReport;
+        scoreBoardDiv.id = "score";
+        scoreBoardDiv.style.textAlign = "center";
+
+        //Make and append the 2nd div
+        const secondDiv = document.createElement("div");
+        secondDiv.style.whiteSpace = "pre";
+        document.body.appendChild(secondDiv);
+        secondDiv.style.textAlign = "left";
+        secondDiv.textContent = " ";
+
+        document.body.style.textAlign = "center";
+
         
+        rockButton = document.querySelector("#rock");
+        paperButton = document.querySelector("#paper");
+        scissorsButton = document.querySelector("#scissors");
+
         
-        playerInput = prompt("Round " + (i+1) + ": Rock, Paper, or Scissors?")
-        computerInput = computerPlay();
-        scoreCountReport = winCount + " wins, " + lossCount + " losses, and " + tieCount + " ties."
-        result = playRound(playerInput,computerInput);
-        console.log(result);
-        switch (true){
-            case result.includes("Win"):
-            winCount++;
-            break;
-            case result.includes("Lose"): 
-            lossCount++;
-            break;
-            case result.includes("Tied"): 
-            tieCount++;
-            //case result.includes("Wrong input."):
-            //alert(result);
-            //break;
-        //}
+        rockButton.addEventListener("click", rockFunction);
+        paperButton.addEventListener("click", paperFunction);
+        scissorsButton.addEventListener("click", scissorsFunction);
+
         
-        /*if (4 == i){
-            if (winCount > lossCount){
-                console.log(scoreCountReport + " You won the game!");
-            }
-            else if (winCount < lossCount){
-                console.log(scoreCountReport + " You lose the game.");
-            }
-            else if (winCount == lossCount){
-                console.log(scoreCountReport + " You tied!");
-            }
+        function rockFunction(){
+            if (!checkEndCondition()){
+                    playRound("Rock");
+                }
+        }
+        function paperFunction(){
+            if (!checkEndCondition()){
+                    playRound("Paper");
+                }
+        }
+        function scissorsFunction(){
+            if (!checkEndCondition()){
+                    playRound("Scissors");
+                }
+        }
+
+
+        // Called when the checkEndCondition returns true.
+        function resetGame(){
+            winCount = 0;
+            lossCount = 0;
+            tieCount = 0;
+            secondDiv.style.color = "black";
+            secondDiv.textContent = " ";
+            scoreCountReport = "\r\n Wins: " + winCount + " Losses: " + lossCount + " Ties: " + tieCount + "\r\n";
+            scoreBoardDiv.textContent = scoreCountReport;
+            rockButton.addEventListener("click", rockFunction);
+            paperButton.addEventListener("click", paperFunction);
+            scissorsButton.addEventListener("click", scissorsFunction);
+
+            
             
         }
-        */
+        
+        function checkEndCondition(){
+
+            if(winCount == 3 || lossCount == 3){
+                if(winCount == 3){
+                    secondDiv.textContent = "You won the best of 5! Click any button to reset the game.";
+                    secondDiv.style.color = "green";
+                }
+                if(lossCount == 3){
+                    secondDiv.textContent = "The computer won the best of 5. Click any button to reset the game.";
+                    secondDiv.style.color = "red";
+                }
+                
+                rockButton.removeEventListener("click", rockFunction);
+                paperButton.removeEventListener("click", paperFunction);
+                scissorsButton.removeEventListener("click", scissorsFunction);
+                buttons = document.querySelectorAll("button");
+                buttons.forEach((button) => button.addEventListener("click", () => resetGame(), {once : true}));
+
+                return true;
+            }else{
+                return false;
+            }
+        }
+
+        // Updates score and displays it.
+        function scoreUpdate(){
+            scoreCountReport = "\r\n Wins: " + winCount + " Losses: " + lossCount + " Ties: " + tieCount + "\r\n";
+            scoreBoardDiv.textContent = scoreCountReport;
+        }
+        
+        //Redundant in button-based game, but kept anyways.
+        function capitalize(aString){
+                let trimmedString = aString.trim();
+                let lowerCaseString = trimmedString.toLowerCase();
+                let firstLetter = lowerCaseString.substr(0,1);
+                firstLetter = firstLetter.toUpperCase();
+                let finalString = firstLetter + lowerCaseString.substr(1);
+                return finalString;
+        }
+        //Randomly selects Rock, Paper, or Scissors.
+        function computerPlay(){
+            let num = Math.floor(Math.random() * 3);
+            switch (true){
+                case num == 0: 
+                return "Rock";
+                break;
+                case num == 1:
+                return "Paper";
+                break;
+                case num == 2:
+                return "Scissors";
+                break;            
+            }
 
         }
-    }
-    
-    
-    
+        //Plays a round of rock paper scissors and returns a string saying whether the player won or lost, as well as what was picked.
+        function playRound(playerSelection, computerSelection = computerPlay()){
+            
+            playerSelection = capitalize(playerSelection);
+
+            let win = "You win! " + playerSelection + " beats " + computerSelection + "\r\n";
+            let lose = "You lose! " + computerSelection + " beats " + playerSelection + "\r\n";
+            let tie = "Tied! You both picked " + playerSelection + "\r\n";
+            let wrongInput = "Wrong input. Please use only the words rock, paper, or scissors without any extra characters or numbers." + "\r\n";
+            
+            if (playerSelection !== "Rock" && playerSelection !== "Scissors" && playerSelection !== "Paper"){
+                return wrongInput;
+            }
+            switch (true){
+                case playerSelection == computerSelection:
+                secondDiv.textContent += tie;
+                tieCount++;
+                scoreUpdate();
+                return tie;
+                break;
+                case playerSelection == "Rock" && computerSelection == "Scissors":
+                secondDiv.textContent += win;
+                winCount++;
+                scoreUpdate();
+                return win;
+                break;
+                case playerSelection == "Rock" && computerSelection == "Paper":
+                secondDiv.textContent += lose;
+                lossCount++;
+                scoreUpdate();
+                return lose;
+                break;
+                case playerSelection == "Paper" && computerSelection == "Rock":
+                secondDiv.textContent += win;
+                winCount++;
+                scoreUpdate();
+                return win;
+                break;
+                case playerSelection == "Paper" && computerSelection == "Scissors":
+                secondDiv.textContent += lose;
+                lossCount++;
+                scoreUpdate();
+                return lose;
+                break;
+                case playerSelection == "Scissors" && computerSelection == "Paper":
+                secondDiv.textContent += win;
+                winCount++;
+                scoreUpdate();
+                return win;
+                break;
+                case playerSelection == "Scissors" && computerSelection == "Rock":
+                secondDiv.textContent += lose;
+                lossCount++;
+                scoreUpdate();
+                return lose;
+                break;
+            }
+        }
+
+        
+        
+        
     </script>
 
 
